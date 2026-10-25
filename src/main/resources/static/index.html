@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ResumeFit</title>
+<style>
+  :root { --bg:#fff; --fg:#1c1c1c; --muted:#666; --card:#f5f5f5; --line:#ddd; --accent:#c62828; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#121212; --fg:#eee; --muted:#aaa; --card:#1e1e1e; --line:#333; } }
+  body { font-family: system-ui, sans-serif; background:var(--bg); color:var(--fg); max-width:720px; margin:0 auto; padding:16px; }
+  h1 { font-size:1.4rem; } h2 { font-size:1.1rem; margin-top:0; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:14px; margin:12px 0; }
+  input, textarea, button { width:100%; box-sizing:border-box; padding:10px; margin:6px 0; font:inherit; border-radius:6px; border:1px solid var(--line); background:var(--bg); color:var(--fg); }
+  button { background:var(--accent); color:#fff; border:none; cursor:pointer; }
+  button.link { background:none; color:var(--accent); width:auto; padding:0; }
+  .score { font-size:2.4rem; font-weight:700; }
+  .chip { display:inline-block; padding:2px 8px; margin:2px; border-radius:12px; font-size:.85rem; border:1px solid var(--line); }
+  .ok { border-color:#2e7d32; } .bad { border-color:var(--accent); }
+  .err { color:var(--accent); } .hidden { display:none; } .muted { color:var(--muted); font-size:.9rem; }
+  table { width:100%; border-collapse:collapse; } td { padding:6px 4px; border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+<h1>ResumeFit</h1>
+<p class="muted">Check how well your resume fits a job description.</p>
+
+<div id="auth" class="card">
+  <h2 id="authTitle">Log in</h2>
+  <input id="fullName" class="hidden" placeholder="Full name">
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password (min 8 characters)">
+  <button id="authBtn">Log in</button>
+  <button id="toggle" class="link" type="button">Need an account? Register</button>
+  <div id="authErr" class="err"></div>
+</div>
+
+<div id="app" class="hidden">
+  <div class="card">
+    <span id="who" class="muted"></span> <button id="logout" class="link" type="button">Log out</button>
+  </div>
+  <div class="card">
+    <h2>New analysis</h2>
+    <input id="file" type="file" accept=".pdf,.docx,.txt">
+    <input id="jobTitle" placeholder="Job title">
+    <textarea id="jd" rows="7" placeholder="Paste the full job description"></textarea>
+    <button id="analyze">Analyze</button>
+    <div id="appErr" class="err"></div>
+  </div>
+  <div id="result" class="card hidden"></div>
+  <div class="card"><h2>History</h2><table id="history"></table></div>
+</div>
+
+<script>
+let token = localStorage.getItem('token');
+let registerMode = false;
+const $ = id => document.getElementById(id);
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function chips(list, cls) { return list.length ? list.map(s => `<span class="chip ${cls}">${esc(s)}</span>`).join('') : '<span class="muted">None</span>'; }
+
+async function api(path, options = {}) {
+  options.headers = Object.assign({}, options.headers, token ? { Authorization: 'Bearer ' + token } : {});
+  const res = await fetch(path, options);
+  if (res.status === 401 && token) { logout(); throw new Error('Session expired. Please log in again.'); }
+  if (res.status === 204) return null;
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || 'Request failed');
+  return data;
+}
+
+function showApp() {
+  const on = !!token;
+  $('auth').classList.toggle('hidden', on);
+  $('app').classList.toggle('hidden', !on);
+  if (on) { loadMe(); loadHistory(); }
+}
+
+function logout() { token = null; localStorage.removeItem('token'); showApp(); }
+
+async function loadMe() { try { const me = await api('/api/me'); $('who').textContent = me.fullName + ' (' + me.email + ')'; } catch (e) {} }
+
+function renderResult(a) {
+  const r = $('result');
+  r.classList.remove('hidden');
+  r.innerHTML = `<div class="score">${a.fitScore}% <span class="muted">${esc(a.verdict)}</span></div>
+    <div class="muted">${esc(a.jobTitle)} | skill coverage ${Math.round(a.skillCoverage * 100)}%</div>
+    <h2>Matched</h2>${chips(a.matchedSkills, 'ok')}
+    <h2>Missing</h2>${chips(a.missingSkills, 'bad')}
+    <h2>Also on your resume</h2>${chips(a.extraSkills, '')}
+    <h2>What to do next</h2><ul>${a.suggestions.map(s => `<li>${esc(s)}</li>`).join('')}</ul>`;
+}
+
+async function loadHistory() {
+  try {
+    const page = await api('/api/analyses?size=10');
+    $('history').innerHTML = page.content.length ? page.content.map(h =>
+      `<tr><td>${esc(h.jobTitle)}<br><span class="muted">${esc(h.resumeFileName)}</span></td><td>${h.fitScore}%</td>
+       <td><button class="link" onclick="openOne(${h.id})">View</button> <button class="link" onclick="removeOne(${h.id})">Delete</button></td></tr>`
+    ).join('') : '<tr><td class="muted">No analyses yet</td></tr>';
+  } catch (e) { $('appErr').textContent = e.message; }
+}
+
+async function openOne(id) { try { renderResult(await api('/api/analyses/' + id)); } catch (e) { $('appErr').textContent = e.message; } }
+async function removeOne(id) { try { await api('/api/analyses/' + id, { method: 'DELETE' }); loadHistory(); } catch (e) { $('appErr').textContent = e.message; } }
+
+$('toggle').onclick = () => {
+  registerMode = !registerMode;
+  $('fullName').classList.toggle('hidden', !registerMode);
+  $('authTitle').textContent = registerMode ? 'Register' : 'Log in';
+  $('authBtn').textContent = registerMode ? 'Register' : 'Log in';
+  $('toggle').textContent = registerMode ? 'Have an account? Log in' : 'Need an account? Register';
+};
+
+$('authBtn').onclick = async () => {
+  $('authErr').textContent = '';
+  const body = { email: $('email').value, password: $('password').value };
+  if (registerMode) body.fullName = $('fullName').value;
+  try {
+    const data = await api(registerMode ? '/api/auth/register' : '/api/auth/login',
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    token = data.token; localStorage.setItem('token', token); showApp();
+  } catch (e) { $('authErr').textContent = e.message; }
+};
+
+$('analyze').onclick = async () => {
+  $('appErr').textContent = '';
+  const f = $('file').files[0];
+  if (!f) { $('appErr').textContent = 'Choose your resume file first'; return; }
+  const form = new FormData();
+  form.append('file', f); form.append('jobTitle', $('jobTitle').value); form.append('jobDescription', $('jd').value);
+  try { renderResult(await api('/api/analyses', { method: 'POST', body: form })); loadHistory(); }
+  catch (e) { $('appErr').textContent = e.message; }
+};
+
+$('logout').onclick = logout;
+showApp();
+</script>
+</body>
+</html>

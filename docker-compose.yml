@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: resumefit
+      MYSQL_USER: resumefit
+      MYSQL_PASSWORD: ${DB_PASSWORD:-resumefit-dev}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root-dev}
+    volumes:
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root-dev}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:mysql://db:3306/resumefit
+      DB_USER: resumefit
+      DB_PASSWORD: ${DB_PASSWORD:-resumefit-dev}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET to a random string of 32+ characters}
+    ports:
+      - "8080:8080"
+
+volumes:
+  dbdata:

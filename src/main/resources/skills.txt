@@ -1,0 +1,104 @@
+# Category|Canonical name|comma-separated aliases (first is the name itself)
+Language|Java|Java
+Language|Python|Python
+Language|JavaScript|JavaScript,JS,ECMAScript
+Language|TypeScript|TypeScript
+Language|C++|C++
+Language|C#|C#
+Language|C|C programming,C language
+Language|Go|Golang
+Language|Kotlin|Kotlin
+Language|PHP|PHP
+Language|SQL|SQL
+Language|Bash|Bash,Shell scripting
+Backend|Spring Boot|Spring Boot,SpringBoot
+Backend|Spring Framework|Spring Framework,Spring MVC,Spring Core
+Backend|Spring Security|Spring Security
+Backend|Spring Data JPA|Spring Data JPA,Spring Data
+Backend|Hibernate|Hibernate
+Backend|JPA|JPA,Jakarta Persistence
+Backend|JDBC|JDBC
+Backend|REST APIs|REST API,REST APIs,RESTful API,RESTful APIs,RESTful services,REST services,RESTful
+Backend|Microservices|Microservices,Microservice
+Backend|GraphQL|GraphQL
+Backend|gRPC|gRPC
+Backend|JWT|JWT,JSON Web Token
+Backend|OAuth2|OAuth2,OAuth 2.0,OAuth
+Backend|Django|Django
+Backend|Flask|Flask
+Backend|FastAPI|FastAPI
+Backend|Node.js|Node.js,NodeJS
+Backend|Express.js|Express.js,ExpressJS
+Backend|Maven|Maven
+Backend|Gradle|Gradle
+Backend|Kafka|Kafka,Apache Kafka
+Backend|RabbitMQ|RabbitMQ
+Database|MySQL|MySQL
+Database|PostgreSQL|PostgreSQL,Postgres
+Database|MongoDB|MongoDB
+Database|Redis|Redis
+Database|Oracle|Oracle DB,Oracle Database
+Database|Elasticsearch|Elasticsearch
+Database|Flyway|Flyway
+Frontend|React|React,React.js,ReactJS
+Frontend|Angular|Angular
+Frontend|Vue.js|Vue.js,VueJS,Vue
+Frontend|HTML|HTML,HTML5
+Frontend|CSS|CSS,CSS3
+Frontend|Tailwind CSS|Tailwind CSS,Tailwind
+Frontend|Streamlit|Streamlit
+DevOps|Docker|Docker
+DevOps|Kubernetes|Kubernetes,K8s
+DevOps|CI/CD|CI/CD,CI CD,Continuous Integration,Continuous Delivery
+DevOps|Jenkins|Jenkins
+DevOps|GitHub Actions|GitHub Actions
+DevOps|Git|Git,GitHub,GitLab
+DevOps|Terraform|Terraform
+DevOps|Linux|Linux,Unix
+DevOps|Nginx|Nginx
+Cloud|AWS|AWS,Amazon Web Services
+Cloud|Azure|Azure
+Cloud|GCP|GCP,Google Cloud
+Testing|JUnit|JUnit
+Testing|Mockito|Mockito
+Testing|Selenium|Selenium
+Testing|Postman|Postman
+Testing|Test Automation|Test Automation,Automation Testing
+Testing|Manual Testing|Manual Testing
+Testing|TDD|TDD,Test Driven Development
+AI/ML|Machine Learning|Machine Learning,ML
+AI/ML|Deep Learning|Deep Learning
+AI/ML|NLP|NLP,Natural Language Processing
+AI/ML|Generative AI|Generative AI,GenAI,Gen AI
+AI/ML|LLM|LLM,LLMs,Large Language Models
+AI/ML|RAG|RAG,Retrieval Augmented Generation,Retrieval-Augmented Generation
+AI/ML|LangChain|LangChain
+AI/ML|LangGraph|LangGraph
+AI/ML|Prompt Engineering|Prompt Engineering
+AI/ML|scikit-learn|scikit-learn,sklearn
+AI/ML|TensorFlow|TensorFlow
+AI/ML|PyTorch|PyTorch
+AI/ML|Pandas|Pandas
+AI/ML|NumPy|NumPy
+AI/ML|Computer Vision|Computer Vision
+AI/ML|Data Annotation|Data Annotation,Data Labeling,Image Annotation
+Data|Power BI|Power BI,PowerBI
+Data|Tableau|Tableau
+Data|Excel|Excel,Microsoft Excel
+Data|Data Analysis|Data Analysis,Data Analytics
+Data|ETL|ETL
+Data|Google Analytics|Google Analytics,GA4
+Practice|Agile|Agile
+Practice|Scrum|Scrum
+Practice|Design Patterns|Design Patterns
+Practice|OOP|OOP,Object Oriented Programming,Object-Oriented Programming
+Practice|Data Structures|Data Structures,DSA
+Practice|Algorithms|Algorithms
+Practice|System Design|System Design
+Practice|SDLC|SDLC
+Practice|Code Review|Code Review
+Practice|Requirements Analysis|BRD,FRD,SRS,Requirements Gathering
+Soft|Communication|Communication
+Soft|Teamwork|Teamwork,Collaboration
+Soft|Problem Solving|Problem Solving
+Soft|Leadership|Leadership
